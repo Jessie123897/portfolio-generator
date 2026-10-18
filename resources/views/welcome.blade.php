@@ -6,15 +6,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Folio — Portfolio Generator</title>
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
           rel="stylesheet">
 
-    <!-- Font Awesome Icons -->
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
@@ -51,8 +48,6 @@
         a {
             -webkit-tap-highlight-color: transparent;
         }
-
-        /* NAVIGATION */
 
         nav {
             width: 100%;
@@ -232,8 +227,6 @@
             color: var(--primary);
         }
 
-        /* TEMPLATE PREVIEW */
-
         .preview-area {
             position: relative;
             padding: 25px 10px;
@@ -385,8 +378,6 @@
             font-size: 19px;
         }
 
-        /* FOOTER */
-
         footer {
             width: 100%;
             max-width: 1100px;
@@ -399,8 +390,6 @@
             color: #92908b;
             font-size: 12px;
         }
-
-        /* TABLET AND MOBILE */
 
         @media (max-width: 850px) {
             .hero {
@@ -549,8 +538,6 @@
             }
         }
 
-        /* REDUCED MOTION ACCESSIBILITY */
-
         @media (prefers-reduced-motion: reduce) {
             *,
             *::before,
@@ -565,7 +552,6 @@
 
 <body>
 
-    <!-- NAVIGATION -->
     <nav>
         <a href="{{ url('/') }}" class="logo" aria-label="Folio home">
             <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
@@ -585,25 +571,13 @@
         </div>
     </nav>
 
-    <!-- MAIN CONTENT -->
     <main class="hero">
 
         <section>
-            <p class="eyebrow">
-                <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
-                YOUR PORTFOLIO, YOUR WAY
-            </p>
-
             <h1>
                 Make your work
                 <span>stand out.</span>
             </h1>
-
-            <p class="description">
-                Create a portfolio that feels like you.
-                Showcase your skills, education, and projects
-                in a style that matches your personality.
-            </p>
 
             <div class="buttons">
                 <a href="{{ route('portfolios.create') }}" class="primary-btn">
