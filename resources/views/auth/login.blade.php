@@ -3,9 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Login | Portfolio Generator</title>
+
     <style>
-        * { box-sizing: border-box; }
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
             font-family: Arial, sans-serif;
@@ -15,6 +20,7 @@
             place-items: center;
             padding: 20px;
         }
+
         .card {
             width: 100%;
             max-width: 430px;
@@ -23,9 +29,23 @@
             border-radius: 16px;
             box-shadow: 0 8px 30px #00000012;
         }
-        h1 { margin-top: 0; color: #1f2937; }
-        .subtitle { color: #6b7280; margin-bottom: 24px; }
-        label { display: block; margin: 16px 0 7px; font-weight: bold; }
+
+        h1 {
+            margin-top: 0;
+            color: #1f2937;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            margin: 16px 0 7px;
+            font-weight: bold;
+        }
+
         input {
             width: 100%;
             padding: 12px;
@@ -33,6 +53,7 @@
             border-radius: 8px;
             font-size: 15px;
         }
+
         button {
             width: 100%;
             margin-top: 24px;
@@ -44,18 +65,47 @@
             font-size: 16px;
             cursor: pointer;
         }
-        button:hover { background: #4338ca; }
-        .error { color: #dc2626; font-size: 14px; margin-top: 5px; }
-        .footer { text-align: center; margin-top: 20px; color: #6b7280; }
-        a { color: #4f46e5; }
-        .remember { display: flex; align-items: center; gap: 8px; margin-top: 16px; }
-        .remember input { width: auto; }
+
+        button:hover {
+            background: #4338ca;
+        }
+
+        .error {
+            color: #dc2626;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #6b7280;
+        }
+
+        a {
+            color: #4f46e5;
+        }
+
+        .remember {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .remember input {
+            width: auto;
+        }
     </style>
 </head>
+
 <body>
     <div class="card">
         <h1>Welcome back</h1>
-        <p class="subtitle">Log in to manage your portfolios.</p>
+
+        <p class="subtitle">
+            Log in to manage your portfolios.
+        </p>
 
         @if ($errors->any())
             <div class="error">
@@ -67,19 +117,40 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('login') }}">
+        @if (session('success'))
+            <p style="color: green;">
+                {{ session('success') }}
+            </p>
+        @endif
+
+        <form method="POST" action="{{ route('login.submit') }}">
             @csrf
 
             <label for="email">Email Address</label>
-            <input id="email" type="email" name="email"
-                   value="{{ old('email') }}" required autocomplete="email">
+            <input
+                id="email"
+                type="email"
+                name="email"
+                value="{{ old('email') }}"
+                required
+                autocomplete="email"
+            >
 
             <label for="password">Password</label>
-            <input id="password" type="password" name="password"
-                   required autocomplete="current-password">
+            <input
+                id="password"
+                type="password"
+                name="password"
+                required
+                autocomplete="current-password"
+            >
 
             <label class="remember">
-                <input type="checkbox" name="remember" value="1">
+                <input
+                    type="checkbox"
+                    name="remember"
+                    value="1"
+                >
                 Remember me
             </label>
 
