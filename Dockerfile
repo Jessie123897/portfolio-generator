@@ -10,22 +10,11 @@ RUN npm run build
 
 
 # ==========================================
-# STAGE 2: PHP + APACHE + LARAVEL
+# STAGE 2: PHP + LARAVEL
 # ==========================================
-FROM php:8.3-apache
+FROM php:8.3-cli
 
-# Disable all MPM modules, then enable only prefork
-RUN for module in mpm_event mpm_worker mpm_prefork; do \
-        a2dismod "$module" 2>/dev/null || true; \
-    done \
-    && rm -f /etc/apache2/mods-enabled/mpm_event.* \
-              /etc/apache2/mods-enabled/mpm_worker.* \
-              /etc/apache2/mods-enabled/mpm_prefork.* \
-    && a2enmod mpm_prefork \
-    && echo "=== Enabled MPM modules ===" \
-    && ls -l /etc/apache2/mods-enabled/mpm*
-
-# Install system dependencies and PHP extensions
+# Install required system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev \
     libcurl4-openssl-dev \
@@ -54,10 +43,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Set Laravel working directory
+# Set Laravel directory
 WORKDIR /var/www/html
 
-# Copy application source code
+# Copy project files
 COPY . .
 
 # Install production dependencies
@@ -67,31 +56,20 @@ RUN composer install \
     --optimize-autoloader \
     --no-interaction
 
-# Copy compiled Vite assets
+# Copy built frontend files
 COPY --from=frontend /app/public/build ./public/build
 
-# Configure Apache document root
-RUN sed -i 's!/var/www/html!/var/www/html/public!g' \
-    /etc/apache2/sites-available/000-default.conf \
-    && a2enmod rewrite headers \
-    && printf '\n<Directory /var/www/html/public>\n    AllowOverride All\n    Require all granted\n</Directory>\n' \
-       >> /etc/apache2/apache2.conf
-
-# Create Laravel writable directories
+# Prepare Laravel writable directories
 RUN mkdir -p \
-       storage/framework/cache/data \
-       storage/framework/sessions \
-       storage/framework/views \
-       storage/logs \
-       bootstrap/cache \
+    storage/framework/cache/data \
+    storage/framework/sessions \
+    storage/framework/views \
+    storage/logs \
+    bootstrap/cache \
     && chown -R www-data:www-data storage bootstrap/cache
 
-# Copy startup script
-COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-
-# Railway application port
+# Railway port
 EXPOSE 10000
 
-CMD ["docker-entrypoint.sh"]
+# Start Laravel on Railway's assigned port
+CMD ["sh", "-c", "php artisan serve --host=0.0.0.0 --port=${PORT:-10000}"]
