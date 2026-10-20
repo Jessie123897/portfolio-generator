@@ -1,19 +1,19 @@
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <title>F.Porfs. — Portfolio Generator</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
           rel="stylesheet">
 
     <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <style>
         * {
@@ -23,17 +23,13 @@
         }
 
         :root {
-            --primary: #7065e8;
-            --primary-dark: #5a4ed1;
-            --background: #f7f5f0;
-            --text: #222222;
-            --muted: #737373;
-            --border: #ece9e3;
-            --white: #ffffff;
-        }
-
-        html {
-            scroll-behavior: smooth;
+            --background: #171719;
+            --panel: #202023;
+            --panel-hover: #29292e;
+            --accent: #a99bea;
+            --text: #f2f0ed;
+            --muted: #aaa7b2;
+            --border: #39383f;
         }
 
         body {
@@ -45,471 +41,318 @@
             flex-direction: column;
         }
 
-        a {
-            -webkit-tap-highlight-color: transparent;
-        }
-
         nav {
             width: 100%;
-            max-width: 1150px;
-            margin: auto;
-            padding: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 28px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 20px;
         }
 
         .logo {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-family: 'Manrope', sans-serif;
-            font-size: 30px;
-            font-weight: 800;
-            letter-spacing: -2px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 27px;
+            font-weight: 700;
+            letter-spacing: -1.5px;
             color: var(--text);
             text-decoration: none;
-            white-space: nowrap;
-        }
-
-        .logo i {
-            color: var(--primary);
-            font-size: 23px;
-            letter-spacing: 0;
         }
 
         .logo span {
-            color: var(--primary);
+            color: var(--accent);
         }
 
-        .nav-actions {
+        .nav-label {
+            color: var(--muted);
+            font-size: 12px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        main {
+            flex: 1;
             display: flex;
-            align-items: center;
-            gap: 24px;
-        }
-
-        .nav-link {
-            display: inline-flex;
-            align-items: center;
             justify-content: center;
-            gap: 8px;
-            text-decoration: none;
-            color: #444444;
-            font-size: 14px;
-            font-weight: 600;
-            transition: color 0.2s ease;
+            align-items: center;
+            padding: 50px 24px 80px;
         }
 
-        .nav-link i {
-            color: var(--primary);
-            font-size: 15px;
+        .welcome {
+            width: 100%;
+            max-width: 1100px;
+            display: grid;
+            grid-template-columns: 1fr 0.85fr;
+            align-items: center;
+            gap: 80px;
         }
-
-        .nav-link:hover {
-            color: var(--primary);
-        }
-
-        .nav-link:focus-visible,
-        .primary-btn:focus-visible,
-        .secondary-btn:focus-visible {
-            outline: 3px solid #b8b1ff;
-            outline-offset: 4px;
-        }
-
-        /* MAIN HERO */
 
         .hero {
-            width: 100%;
-            max-width: 1150px;
-            margin: auto;
-            padding: 65px 25px 80px;
-            display: grid;
-            grid-template-columns: 1fr 0.9fr;
-            align-items: center;
-            gap: 65px;
-            flex: 1;
+            max-width: 580px;
         }
 
         .eyebrow {
             display: inline-flex;
             align-items: center;
-            gap: 9px;
-            color: var(--primary);
+            gap: 10px;
+            color: var(--accent);
             font-size: 12px;
             font-weight: 700;
-            letter-spacing: 2px;
-            margin-bottom: 22px;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            margin-bottom: 27px;
         }
 
-        .eyebrow i {
-            font-size: 15px;
+        .eyebrow::before {
+            content: "";
+            width: 30px;
+            height: 1px;
+            background: var(--accent);
         }
 
         h1 {
-            font-family: 'Manrope', sans-serif;
+            font-family: 'Playfair Display', serif;
             font-size: clamp(46px, 6vw, 76px);
-            font-weight: 800;
-            line-height: 1.08;
-            letter-spacing: -4px;
-            margin-bottom: 22px;
+            line-height: 1.12;
+            letter-spacing: -1.5px;
+            font-weight: 600;
         }
 
         h1 span {
-            color: var(--primary);
+            display: block;
+            color: var(--accent);
+            font-style: italic;
         }
 
         .description {
-            color: var(--muted);
-            font-size: 16px;
-            line-height: 1.8;
             max-width: 430px;
-            margin-bottom: 32px;
-        }
-
-        /* BUTTONS */
-
-        .buttons {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            flex-wrap: wrap;
-        }
-
-        .primary-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 15px 21px;
-            border: 2px solid var(--primary);
-            border-radius: 9px;
-            background: var(--primary);
-            color: white;
-            font-size: 14px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: background 0.2s ease,
-                        transform 0.2s ease,
-                        box-shadow 0.2s ease;
-        }
-
-        .primary-btn:hover {
-            background: var(--primary-dark);
-            border-color: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px #7065e82b;
-        }
-
-        .primary-btn .button-arrow {
-            margin-left: 3px;
-            font-size: 12px;
-        }
-
-        .secondary-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 9px;
-            padding: 14px 4px;
-            color: #444444;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 600;
-            transition: color 0.2s ease;
-        }
-
-        .secondary-btn i {
-            color: var(--primary);
-        }
-
-        .secondary-btn:hover {
-            color: var(--primary);
-        }
-
-        .preview-area {
-            position: relative;
-            padding: 25px 10px;
-        }
-
-        .preview-label {
-            display: inline-flex;
-            align-items: center;
-            gap: 9px;
-            background: white;
-            padding: 11px 16px;
-            border-radius: 30px;
-            box-shadow: 0 8px 25px #2222220a;
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 18px;
-        }
-
-        .preview-label i {
-            color: var(--primary);
-        }
-
-        .templates {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 15px;
-        }
-
-        .template-card {
-            min-width: 0;
-            background: white;
-            border: 1px solid var(--border);
-            padding: 14px;
-            border-radius: 15px;
-            transition: transform 0.25s ease,
-                        box-shadow 0.25s ease;
-        }
-
-        .template-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px #2222220c;
-        }
-
-        .mockup {
-            min-height: 145px;
-            padding: 13px;
-            border-radius: 9px;
-            overflow: hidden;
-        }
-
-        .simple {
-            background: #f0eeff;
-        }
-
-        .modern {
-            background: #e1f0e9;
-        }
-
-        .creative {
-            background: #ffeadb;
-            min-height: 115px;
-        }
-
-        .mock-line {
-            height: 5px;
-            width: 65%;
-            border-radius: 5px;
-            background: #c8c2f4;
-            margin-bottom: 9px;
-        }
-
-        .mock-line.short {
-            width: 38%;
-            opacity: 0.65;
-        }
-
-        .mock-line.long {
-            width: 85%;
-            margin-top: 18px;
-        }
-
-        .modern .mock-line {
-            background: #9ac9b8;
-        }
-
-        .creative .mock-line {
-            background: #e8aa7e;
-        }
-
-        .mock-blocks {
-            display: flex;
-            gap: 6px;
-            margin-top: 15px;
-        }
-
-        .mock-blocks span {
-            height: 35px;
-            flex: 1;
-            border-radius: 5px;
-            background: #c8c2f4;
-        }
-
-        .modern .mock-blocks span {
-            background: #9ac9b8;
-        }
-
-        .creative .mock-blocks span {
-            background: #e8aa7e;
-        }
-
-        .template-info {
-            margin-top: 13px;
-        }
-
-        .template-name {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-family: 'Manrope', sans-serif;
+            margin: 27px 0 0;
+            color: var(--muted);
             font-size: 15px;
+            line-height: 1.9;
+        }
+
+        .hero-line {
+            width: 60px;
+            height: 3px;
+            margin-top: 35px;
+            background: var(--accent);
+            border-radius: 5px;
+        }
+
+        /* Login and Sign Up panel */
+        .auth-panel {
+            width: 100%;
+            max-width: 450px;
+            justify-self: end;
+            padding: 32px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.2);
+        }
+
+        .panel-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 29px;
+            font-weight: 600;
+        }
+
+        .panel-description {
+            margin: 10px 0 28px;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .btn {
+            width: 100%;
+            min-height: 105px;
+            display: flex;
+            align-items: center;
+            gap: 17px;
+            padding: 22px;
+            background: #262629;
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            color: var(--text);
+            text-align: left;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.2s ease,
+                        border-color 0.2s ease,
+                        transform 0.2s ease;
+        }
+
+        .btn:hover {
+            background: var(--panel-hover);
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .btn:focus-visible {
+            outline: 3px solid var(--accent);
+            outline-offset: 4px;
+        }
+
+        .btn-icon {
+            width: 50px;
+            height: 50px;
+            flex: 0 0 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(169, 155, 234, 0.13);
+            color: var(--accent);
+            border-radius: 13px;
+            font-size: 20px;
+        }
+
+        .btn-text {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .btn-title {
+            display: block;
+            font-size: 17px;
             font-weight: 700;
         }
 
-        .template-name i {
-            color: var(--primary);
-            font-size: 13px;
-        }
-
-        .template-note {
-            color: #888888;
-            font-size: 11px;
-            line-height: 1.6;
+        .btn-description {
+            display: block;
             margin-top: 5px;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.6;
         }
 
-        .template-card:last-child {
-            grid-column: 1 / -1;
-            display: grid;
-            grid-template-columns: 0.8fr 1fr;
-            align-items: center;
-            gap: 15px;
+        .btn-arrow {
+            flex: 0 0 auto;
+            color: var(--accent);
+            transition: transform 0.2s ease;
         }
 
-        .template-card:last-child .template-info {
-            margin-top: 0;
+        .btn:hover .btn-arrow {
+            transform: translateX(4px);
         }
 
-        .template-card:last-child .template-name {
-            font-size: 19px;
+        .panel-note {
+            margin-top: 23px;
+            text-align: center;
+            color: #817d8c;
+            font-size: 12px;
         }
 
         footer {
             width: 100%;
-            max-width: 1100px;
-            margin: auto;
-            padding: 22px 25px;
-            border-top: 1px solid #e9e6df;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 23px 30px;
             display: flex;
             justify-content: space-between;
-            gap: 12px;
-            color: #92908b;
+            align-items: center;
+            gap: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            color: #817d8c;
             font-size: 12px;
         }
 
+        .footer-logo {
+            color: var(--text);
+            font-weight: 700;
+        }
+
+        .footer-logo span {
+            color: var(--accent);
+        }
+
         @media (max-width: 850px) {
-            .hero {
+            .welcome {
                 grid-template-columns: 1fr;
-                padding-top: 45px;
-                gap: 35px;
+                gap: 42px;
             }
 
-            .hero > section:first-child {
+            .hero {
                 max-width: 650px;
             }
 
-            .description {
-                max-width: 500px;
+            .auth-panel {
+                max-width: 600px;
+                justify-self: stretch;
             }
 
-            .preview-area {
-                width: 100%;
-                max-width: 600px;
-                margin: auto;
-                padding: 10px 0;
+            h1 {
+                font-size: clamp(45px, 9vw, 65px);
             }
         }
 
         @media (max-width: 480px) {
             nav {
-                padding: 20px;
-                gap: 12px;
+                padding: 22px 20px;
             }
 
             .logo {
-                font-size: 25px;
-                gap: 5px;
+                font-size: 24px;
             }
 
-            .logo i {
-                font-size: 19px;
+            .nav-label {
+                font-size: 10px;
+                letter-spacing: 0.8px;
             }
 
-            .nav-actions {
-                gap: 12px;
+            main {
+                padding: 35px 18px 50px;
             }
 
-            .nav-link {
-                font-size: 12px;
-                gap: 5px;
-            }
-
-            .nav-link i {
-                font-size: 13px;
-            }
-
-            .hero {
-                padding: 45px 20px 55px;
-                gap: 30px;
+            .welcome {
+                gap: 35px;
             }
 
             h1 {
-                font-size: clamp(42px, 11vw, 52px);
-                letter-spacing: -2.5px;
-            }
-
-            .eyebrow {
-                font-size: 10px;
-                letter-spacing: 1.5px;
-                margin-bottom: 18px;
+                font-size: 45px;
+                letter-spacing: -1px;
             }
 
             .description {
-                font-size: 15px;
-                margin-bottom: 25px;
+                font-size: 14px;
             }
 
-            .buttons {
-                align-items: stretch;
-                gap: 10px;
+            .auth-panel {
+                padding: 22px;
+                border-radius: 18px;
             }
 
-            .primary-btn {
-                width: 100%;
-                padding: 15px;
+            .panel-title {
+                font-size: 26px;
             }
 
-            .secondary-btn {
-                padding: 12px 4px;
-            }
-
-            .preview-area {
-                padding: 5px 0;
-            }
-
-            .templates {
-                gap: 10px;
-            }
-
-            .template-card {
-                padding: 10px;
-                border-radius: 12px;
-            }
-
-            .mockup {
-                min-height: 120px;
-                padding: 10px;
-            }
-
-            .creative {
+            .btn {
                 min-height: 95px;
+                padding: 16px;
+                gap: 12px;
             }
 
-            .template-name {
-                font-size: 13px;
-                gap: 5px;
+            .btn-icon {
+                width: 44px;
+                height: 44px;
+                flex-basis: 44px;
+                font-size: 18px;
             }
 
-            .template-card:last-child .template-name {
-                font-size: 16px;
+            .btn-title {
+                font-size: 15px;
             }
 
-            .template-note {
-                font-size: 10px;
+            .btn-description {
+                font-size: 11px;
             }
 
             footer {
@@ -517,173 +360,101 @@
                 flex-wrap: wrap;
             }
         }
-
-        @media (max-width: 350px) {
-            nav {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-
-            .nav-actions {
-                width: 100%;
-                justify-content: space-between;
-            }
-
-            .template-card:last-child {
-                grid-template-columns: 1fr;
-            }
-
-            .template-card:last-child .template-info {
-                margin-top: 5px;
-            }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            *,
-            *::before,
-            *::after {
-                scroll-behavior: auto !important;
-                transition-duration: 0.01ms !important;
-                animation-duration: 0.01ms !important;
-            }
-        }
     </style>
 </head>
 
 <body>
 
+    <!-- Navigation -->
     <nav>
-        <a href="{{ url('/') }}" class="logo" aria-label="Folio home">
-            <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
-            folio<span>.</span>
+        <a href="{{ url('/') }}" class="logo">
+            F<span>.</span>Porfs<span>.</span>
         </a>
 
-        <div class="nav-actions">
-            <a href="{{ url('/') }}" class="nav-link" aria-current="page">
-                <i class="fa-solid fa-house" aria-hidden="true"></i>
-                Home
-            </a>
-
-            <a href="{{ route('portfolios.index') }}" class="nav-link">
-                <i class="fa-solid fa-folder-open" aria-hidden="true"></i>
-                My Portfolios
-            </a>
-        </div>
+        <div class="nav-label">Portfolio Generator</div>
     </nav>
 
-    <main class="hero">
+    <!-- Welcome Section -->
+    <main>
+        <section class="welcome">
 
-        <section>
-            <h1>
-                Make your work
-                <span>stand out.</span>
-            </h1>
+            <div class="hero">
+                <div class="eyebrow">Your creative space</div>
 
-            <div class="buttons">
-                <a href="{{ route('portfolios.create') }}" class="primary-btn">
-                    <i class="fa-solid fa-circle-plus" aria-hidden="true"></i>
-                    Create Your Portfolio
-                    <i class="fa-solid fa-arrow-right button-arrow" aria-hidden="true"></i>
-                </a>
+                <h1>
+                    Your work.
+                    <span>Your story.</span>
+                </h1>
 
-                <a href="{{ route('portfolios.index') }}" class="secondary-btn">
-                    <i class="fa-solid fa-eye" aria-hidden="true"></i>
-                    Explore Portfolios
-                </a>
+                <p class="description">
+                    Create your personal portfolio, showcase your skills,
+                    and share your work with the world. Your journey,
+                    your achievements, your own style.
+                </p>
+
+                <div class="hero-line"></div>
             </div>
+
+            <!-- Authentication links -->
+            <div class="auth-panel">
+                <h2 class="panel-title">Welcome to F.Porfs.</h2>
+
+                <p class="panel-description">
+                    Choose an option to begin your portfolio journey.
+                </p>
+
+                <div class="actions">
+
+                    <!-- LOG IN: opens the login page -->
+                    <a href="{{ url('/login') }}" class="btn">
+                        <span class="btn-icon">
+                            <i class="fa-solid fa-arrow-right-to-bracket"
+                               aria-hidden="true"></i>
+                        </span>
+
+                        <span class="btn-text">
+                            <span class="btn-title">Log In</span>
+                            <span class="btn-description">
+                                Welcome back. Continue to your account.
+                            </span>
+                        </span>
+
+                        <i class="fa-solid fa-arrow-right btn-arrow"
+                           aria-hidden="true"></i>
+                    </a>
+
+                    <!-- SIGN UP: opens the registration page -->
+                    <a href="{{ url('/register') }}" class="btn">
+                        <span class="btn-icon">
+                            <i class="fa-solid fa-user-plus"
+                               aria-hidden="true"></i>
+                        </span>
+
+                        <span class="btn-text">
+                            <span class="btn-title">Sign Up</span>
+                            <span class="btn-description">
+                                Create an account and build your portfolio.
+                            </span>
+                        </span>
+
+                        <i class="fa-solid fa-arrow-right btn-arrow"
+                           aria-hidden="true"></i>
+                    </a>
+
+                </div>
+
+                <p class="panel-note">
+                    Your portfolio. Your information. Your story.
+                </p>
+            </div>
+
         </section>
-
-        <!-- TEMPLATE PREVIEW -->
-        <section class="preview-area" aria-label="Portfolio template examples">
-
-            <div class="preview-label">
-                <i class="fa-solid fa-palette" aria-hidden="true"></i>
-                Find your style
-            </div>
-
-            <div class="templates">
-
-                <!-- SIMPLE TEMPLATE -->
-                <article class="template-card">
-                    <div class="mockup simple" aria-hidden="true">
-                        <div class="mock-line short"></div>
-                        <div class="mock-line long"></div>
-                        <div class="mock-line"></div>
-                        <div class="mock-line short"></div>
-                    </div>
-
-                    <div class="template-info">
-                        <p class="template-name">
-                            <i class="fa-solid fa-file-lines" aria-hidden="true"></i>
-                            01. Simple
-                        </p>
-                        <p class="template-note">
-                            Clean and professional
-                        </p>
-                    </div>
-                </article>
-
-                <!-- MODERN TEMPLATE -->
-                <article class="template-card">
-                    <div class="mockup modern" aria-hidden="true">
-                        <div class="mock-line short"></div>
-                        <div class="mock-line long"></div>
-
-                        <div class="mock-blocks">
-                            <span></span>
-                            <span></span>
-                        </div>
-                    </div>
-
-                    <div class="template-info">
-                        <p class="template-name">
-                            <i class="fa-solid fa-table-cells-large" aria-hidden="true"></i>
-                            02. Modern
-                        </p>
-                        <p class="template-note">
-                            Fresh and organized
-                        </p>
-                    </div>
-                </article>
-
-                <!-- CREATIVE TEMPLATE -->
-                <article class="template-card">
-                    <div class="mockup creative" aria-hidden="true">
-                        <div class="mock-line short"></div>
-                        <div class="mock-line long"></div>
-
-                        <div class="mock-blocks">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </div>
-                    </div>
-
-                    <div class="template-info">
-                        <p class="template-name">
-                            <i class="fa-solid fa-paintbrush" aria-hidden="true"></i>
-                            03. Creative
-                        </p>
-                        <p class="template-note">
-                            Bold and expressive
-                        </p>
-                    </div>
-                </article>
-
-            </div>
-        </section>
-
     </main>
 
-    <!-- FOOTER -->
+    <!-- Footer -->
     <footer>
-        <span>
-            &copy; {{ date('Y') }} Folio.
-        </span>
-
-        <span>
-            Made to showcase you.
-        </span>
+        <span class="footer-logo">F<span>.</span>Porfs<span>.</span></span>
+        <span>&copy; {{ date('Y') }} — Made to showcase you.</span>
     </footer>
 
 </body>

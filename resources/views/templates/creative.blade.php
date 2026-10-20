@@ -387,43 +387,28 @@
 
         .about-card {
             position: relative;
-
             overflow: hidden;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #f2eafb,
-                    #fff0eb
-                );
-
+            padding: 22px 26px;
+            background: linear-gradient(135deg, #f2eafb, #fff0eb);
             border: none;
         }
 
-        .about-card::after {
-            content: "ABOUT";
+        .about-card .card-title {
+            margin-bottom: 12px;
+        }
 
-            position: absolute;
-
-            right: -15px;
-            top: -45px;
-
-            font-size: 100px;
-            font-weight: bold;
-
-            color: rgba(105, 67, 154, 0.06);
+        .about-card .card-title h2 {
+            font-size: 21px;
         }
 
         .about-text {
             position: relative;
             z-index: 2;
-
-            font-size: 18px;
-            line-height: 1.9;
-
             color: #554b60;
-
+            font-size: 15px;
+            line-height: 1.6;
             white-space: pre-line;
+            overflow-wrap: anywhere;
         }
 
 

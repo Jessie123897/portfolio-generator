@@ -1,9 +1,9 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Portfolio;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
@@ -11,7 +11,10 @@ class PortfolioController extends Controller
 {
     public function index()
     {
-        $portfolios = Portfolio::latest()->get();
+        $portfolios = Auth::user()
+            ->portfolios()
+            ->latest()
+            ->get();
 
         return view('portfolios.index', compact('portfolios'));
     }
@@ -30,15 +33,12 @@ class PortfolioController extends Controller
             'email' => 'nullable|email|max:255',
             'phone' => 'nullable|string|max:50',
             'location' => 'nullable|string|max:255',
-
             'profile_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-
             'educational_background' => 'nullable|string',
             'skills' => 'nullable|string',
             'projects' => 'nullable|string',
             'work_experience' => 'nullable|string',
             'social_links' => 'nullable|string',
-
             'template' => 'required|in:simple,modern,creative',
         ]);
 
@@ -48,7 +48,7 @@ class PortfolioController extends Controller
             );
         }
 
-        Portfolio::create($validated);
+        Auth::user()->portfolios()->create($validated);
 
         return redirect()
             ->route('portfolios.index')
@@ -57,16 +57,22 @@ class PortfolioController extends Controller
 
     public function show(Portfolio $portfolio)
     {
+        $this->checkOwnership($portfolio);
+
         return view('portfolios.show', compact('portfolio'));
     }
 
     public function edit(Portfolio $portfolio)
     {
+        $this->checkOwnership($portfolio);
+
         return view('portfolios.edit', compact('portfolio'));
     }
 
     public function update(Request $request, Portfolio $portfolio)
     {
+        $this->checkOwnership($portfolio);
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'title' => 'required|string|max:255',
@@ -74,15 +80,12 @@ class PortfolioController extends Controller
             'email' => 'nullable|email|max:255',
             'phone' => 'nullable|string|max:50',
             'location' => 'nullable|string|max:255',
-
             'profile_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-
             'educational_background' => 'nullable|string',
             'skills' => 'nullable|string',
             'projects' => 'nullable|string',
             'work_experience' => 'nullable|string',
             'social_links' => 'nullable|string',
-
             'template' => 'required|in:simple,modern,creative',
         ]);
 
@@ -101,11 +104,21 @@ class PortfolioController extends Controller
 
     public function destroy(Portfolio $portfolio)
     {
+        $this->checkOwnership($portfolio);
+
         $portfolio->delete();
 
         return redirect()
             ->route('portfolios.index')
             ->with('success', 'Portfolio deleted successfully!');
+    }
+
+    private function checkOwnership(Portfolio $portfolio): void
+    {
+        abort_unless(
+            (int) $portfolio->user_id === (int) Auth::id(),
+            404
+        );
     }
 
     private function uploadProfileImage($file)
@@ -114,9 +127,7 @@ class PortfolioController extends Controller
         $serviceKey = config('services.supabase.service_key');
 
         $extension = $file->getClientOriginalExtension();
-
         $filename = Str::uuid() . '.' . $extension;
-
         $path = 'portfolio-images/' . $filename;
 
         $response = Http::withHeaders([
@@ -124,15 +135,15 @@ class PortfolioController extends Controller
             'Authorization' => 'Bearer ' . $serviceKey,
             'Content-Type' => $file->getMimeType(),
         ])
-        ->withBody(
-            file_get_contents($file->getRealPath()),
-            $file->getMimeType()
-        )
-        ->post(
-            $supabaseUrl . '/storage/v1/object/' . $path
-        );
+            ->withBody(
+                file_get_contents($file->getRealPath()),
+                $file->getMimeType()
+            )
+            ->post(
+                $supabaseUrl . '/storage/v1/object/' . $path
+            );
 
-        if (!$response->successful()) {
+        if (! $response->successful()) {
             abort(
                 500,
                 'Profile image upload failed: ' . $response->body()
