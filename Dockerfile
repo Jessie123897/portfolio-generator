@@ -3,25 +3,31 @@ FROM node:22-alpine AS frontend
 WORKDIR /app
 
 COPY package*.json ./
+
 RUN npm install
 
 COPY . .
+
 RUN npm run build
 
 
 # ==========================================
-# Stage 2: Laravel + PHP + Apache
+# STAGE 2: PHP + APACHE + LARAVEL
 # ==========================================
 FROM php:8.3-apache
 
-# Reset Apache MPM modules and enable only prefork
-RUN rm -f /etc/apache2/mods-enabled/mpm_event.* \
-          /etc/apache2/mods-enabled/mpm_worker.* \
-          /etc/apache2/mods-enabled/mpm_prefork.* \
-    && a2enmod mpm_prefork \
-    && ls -l /etc/apache2/mods-enabled/mpm*
+# Diagnose Apache MPM configuration
+RUN echo "=== Apache MPM modules enabled ===" \
+    && ls -la /etc/apache2/mods-enabled/ \
+    && echo "=== Apache MPM LoadModule directives ===" \
+    && grep -RniE '^[[:space:]]*LoadModule[[:space:]]+mpm_' \
+       /etc/apache2/apache2.conf \
+       /etc/apache2/conf-enabled \
+       /etc/apache2/mods-enabled \
+       /etc/apache2/sites-enabled \
+       2>/dev/null || true
 
-# Install PHP extensions and system dependencies
+# Install required system dependencies and PHP extensions
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev \
     libcurl4-openssl-dev \
@@ -50,10 +56,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Set Laravel working directory
+# Laravel application directory
 WORKDIR /var/www/html
 
-# Copy application files
+# Copy application source
 COPY . .
 
 # Install production dependencies
@@ -63,17 +69,17 @@ RUN composer install \
     --optimize-autoloader \
     --no-interaction
 
-# Copy compiled frontend assets
+# Copy compiled Vite assets
 COPY --from=frontend /app/public/build ./public/build
 
-# Configure Apache to serve Laravel's public directory
+# Configure Apache document root and Laravel access
 RUN sed -i 's!/var/www/html!/var/www/html/public!g' \
     /etc/apache2/sites-available/000-default.conf \
     && a2enmod rewrite headers \
     && printf '\n<Directory /var/www/html/public>\n    AllowOverride All\n    Require all granted\n</Directory>\n' \
        >> /etc/apache2/apache2.conf
 
-# Prepare Laravel storage and cache directories
+# Create Laravel writable directories
 RUN mkdir -p \
        storage/framework/cache/data \
        storage/framework/sessions \
@@ -82,12 +88,12 @@ RUN mkdir -p \
        bootstrap/cache \
     && chown -R www-data:www-data storage bootstrap/cache
 
-# Copy the startup script
+# Add container startup script
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-# Railway supplies the PORT environment variable
+# Railway port
 EXPOSE 10000
 
 CMD ["docker-entrypoint.sh"]
