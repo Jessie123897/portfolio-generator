@@ -1,20 +1,82 @@
-public function login(Request $request)
+
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+
+class AuthController extends Controller
 {
-    $credentials = $request->validate([
-        'email' => ['required', 'email'],
-        'password' => ['required', 'string'],
-    ]);
-
-    $user = User::where('email', $credentials['email'])->first();
-
-    if (!$user || !Hash::check($credentials['password'], $user->password)) {
-        return back()->withErrors([
-            'email' => 'Email or password does not match.',
-        ])->withInput($request->only('email'));
+    public function showRegister()
+    {
+        return view('auth.register');
     }
 
-    Auth::login($user, $request->boolean('remember'));
-    $request->session()->regenerate();
+    public function register(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
 
-    return redirect('/portfolios');
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        Auth::login($user);
+
+        $request->session()->regenerate();
+
+        return redirect()->route('portfolios.index')
+            ->with('success', 'Account created successfully!');
+    }
+
+    public function showLogin()
+    {
+        return view('auth.login');
+    }
+
+    public function login(Request $request)
+    {
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required', 'string'],
+        ]);
+
+        $user = User::where('email', $credentials['email'])->first();
+
+        if (
+            !$user ||
+            !Hash::check($credentials['password'], $user->password)
+        ) {
+            return back()
+                ->withErrors([
+                    'email' => 'Email or password does not match.',
+                ])
+                ->withInput($request->only('email'));
+        }
+
+        Auth::login($user, $request->boolean('remember'));
+
+        $request->session()->regenerate();
+
+        return redirect()->route('portfolios.index')
+            ->with('success', 'Login successful!');
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('home');
+    }
 }
