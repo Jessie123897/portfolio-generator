@@ -11,6 +11,9 @@ RUN npm run build
 
 FROM php:8.3-apache
 
+# Ensure only the prefork MPM is enabled
+RUN a2dismod mpm_event mpm_worker || true
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev \
     libcurl4-openssl-dev \
