@@ -3,11 +3,9 @@ FROM node:22-alpine AS frontend
 WORKDIR /app
 
 COPY package*.json ./
-
 RUN npm install
 
 COPY . .
-
 RUN npm run build
 
 
@@ -16,18 +14,18 @@ RUN npm run build
 # ==========================================
 FROM php:8.3-apache
 
-# Diagnose Apache MPM configuration
-RUN echo "=== Apache MPM modules enabled ===" \
-    && ls -la /etc/apache2/mods-enabled/ \
-    && echo "=== Apache MPM LoadModule directives ===" \
-    && grep -RniE '^[[:space:]]*LoadModule[[:space:]]+mpm_' \
-       /etc/apache2/apache2.conf \
-       /etc/apache2/conf-enabled \
-       /etc/apache2/mods-enabled \
-       /etc/apache2/sites-enabled \
-       2>/dev/null || true
+# Disable all MPM modules, then enable only prefork
+RUN for module in mpm_event mpm_worker mpm_prefork; do \
+        a2dismod "$module" 2>/dev/null || true; \
+    done \
+    && rm -f /etc/apache2/mods-enabled/mpm_event.* \
+              /etc/apache2/mods-enabled/mpm_worker.* \
+              /etc/apache2/mods-enabled/mpm_prefork.* \
+    && a2enmod mpm_prefork \
+    && echo "=== Enabled MPM modules ===" \
+    && ls -l /etc/apache2/mods-enabled/mpm*
 
-# Install required system dependencies and PHP extensions
+# Install system dependencies and PHP extensions
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev \
     libcurl4-openssl-dev \
@@ -56,10 +54,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Laravel application directory
+# Set Laravel working directory
 WORKDIR /var/www/html
 
-# Copy application source
+# Copy application source code
 COPY . .
 
 # Install production dependencies
@@ -72,7 +70,7 @@ RUN composer install \
 # Copy compiled Vite assets
 COPY --from=frontend /app/public/build ./public/build
 
-# Configure Apache document root and Laravel access
+# Configure Apache document root
 RUN sed -i 's!/var/www/html!/var/www/html/public!g' \
     /etc/apache2/sites-available/000-default.conf \
     && a2enmod rewrite headers \
@@ -88,12 +86,12 @@ RUN mkdir -p \
        bootstrap/cache \
     && chown -R www-data:www-data storage bootstrap/cache
 
-# Add container startup script
+# Copy startup script
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-# Railway port
+# Railway application port
 EXPOSE 10000
 
 CMD ["docker-entrypoint.sh"]
