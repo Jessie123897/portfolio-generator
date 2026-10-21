@@ -29,7 +29,6 @@ class AuthController extends Controller
         ]);
 
         Auth::login($user);
-
         $request->session()->regenerate();
 
         return redirect()->route('portfolios.index')
@@ -48,24 +47,15 @@ class AuthController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        $user = User::where('email', $credentials['email'])->first();
-
-        if (
-            !$user ||
-            !Hash::check($credentials['password'], $user->password)
-        ) {
+        if (! Auth::attempt($credentials, $request->boolean('remember'))) {
             return back()
-                ->withErrors([
-                    'email' => 'Email or password does not match.',
-                ])
-                ->withInput($request->only('email'));
+                ->withErrors(['email' => 'Email or password does not match.'])
+                ->onlyInput('email');
         }
-
-        Auth::login($user, $request->boolean('remember'));
 
         $request->session()->regenerate();
 
-        return redirect()->route('portfolios.index')
+        return redirect()->intended(route('portfolios.index'))
             ->with('success', 'Login successful!');
     }
 
