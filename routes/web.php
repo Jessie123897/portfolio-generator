@@ -33,19 +33,3 @@ Route::post('/logout', [AuthController::class, 'logout'])
 Route::resource('portfolios', PortfolioController::class)
     ->middleware('auth');
 
-// TEMPORARY DEBUG ROUTE - remove after fixing
-Route::get('/_debug', function (\Illuminate\Http\Request $r) {
-    return response()->json([
-        'is_secure_request' => $r->isSecure(),
-        'url_root' => url('/'),
-        'app_env' => config('app.env'),
-        'app_url' => config('app.url'),
-        'session_driver' => config('session.driver'),
-        'session_secure_flag' => config('session.secure'),
-        'session_domain' => config('session.domain'),
-        'session_cookie_name' => config('session.cookie'),
-        'browser_sent_session_cookie' => $r->hasCookie(config('session.cookie')),
-        'auth_check' => \Illuminate\Support\Facades\Auth::check(),
-        'rows_in_sessions_table' => \Illuminate\Support\Facades\DB::table('sessions')->count(),
-    ]);
-});
