@@ -14,7 +14,6 @@ RUN npm run build
 # ==========================================
 FROM php:8.3-cli
 
-# Install required system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev \
     libcurl4-openssl-dev \
@@ -40,26 +39,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Set Laravel directory
 WORKDIR /var/www/html
 
-# Copy project files
 COPY . .
 
-# Install production dependencies
 RUN composer install \
     --no-dev \
     --prefer-dist \
     --optimize-autoloader \
     --no-interaction
 
-# Copy built frontend files
 COPY --from=frontend /app/public/build ./public/build
 
-# Prepare Laravel writable directories
 RUN mkdir -p \
     storage/framework/cache/data \
     storage/framework/sessions \
@@ -68,8 +61,6 @@ RUN mkdir -p \
     bootstrap/cache \
     && chown -R www-data:www-data storage bootstrap/cache
 
-# Railway port
-EXPOSE 10000
+EXPOSE 8080
 
-# Start Laravel on Railway's assigned port
-CMD ["sh", "-c", "php artisan serve --host=0.0.0.0 --port=${PORT:-10000}"]
+CMD ["sh", "-c", "php artisan serve --host=0.0.0.0 --port=${PORT:-8080} --no-reload"]

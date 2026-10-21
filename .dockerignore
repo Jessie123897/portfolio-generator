@@ -14,3 +14,7 @@ storage/logs/*
 storage/framework/cache/data/*
 storage/framework/sessions/*
 storage/framework/views/*
+
+.env
+
+.env
